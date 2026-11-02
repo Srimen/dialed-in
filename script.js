@@ -12,14 +12,33 @@ const meals = [
 // Meals the user has added to their plan
 const plan = [];
 
+// Which filter is selected right now
+let activeTag = "All";
+
 // ===== Grab the empty containers from index.html =====
+const filterBar = document.getElementById("filter-bar");
 const mealGrid = document.getElementById("meal-grid");
 const planList = document.getElementById("plan-list");
 const planTotals = document.getElementById("plan-totals");
 
-// ===== Show every meal as a card =====
+// ===== Show the filter buttons =====
+// The tags come from the meal data, so adding a meal with a new tag
+// creates a new filter button automatically.
+function renderFilters() {
+  const tags = ["All", ...new Set(meals.map(meal => meal.tag))];
+
+  filterBar.innerHTML = tags.map(tag => `
+    <button class="filter-btn" data-tag="${tag}" aria-pressed="${tag === activeTag}">${tag}</button>
+  `).join("");
+}
+
+// ===== Show the meals that match the selected filter =====
 function renderMenu() {
-  mealGrid.innerHTML = meals.map(meal => `
+  const visibleMeals = activeTag === "All"
+    ? meals
+    : meals.filter(meal => meal.tag === activeTag);
+
+  mealGrid.innerHTML = visibleMeals.map(meal => `
     <article class="meal">
       <img src="${meal.image}" alt="${meal.name}" loading="lazy">
       <span class="tag">${meal.tag}</span>
@@ -50,6 +69,15 @@ function renderPlan() {
   planTotals.textContent = `${plan.length} meals: ${totalCalories} cal, ${totalProtein}g protein`;
 }
 
+// ===== Filter buttons =====
+filterBar.addEventListener("click", e => {
+  const tag = e.target.dataset.tag;
+  if (!tag) return;
+  activeTag = tag;
+  renderFilters();
+  renderMenu();
+});
+
 // ===== "Add to plan" buttons =====
 mealGrid.addEventListener("click", e => {
   const id = Number(e.target.dataset.id);
@@ -67,5 +95,7 @@ planList.addEventListener("click", e => {
 });
 
 // ===== Start the page =====
+renderFilters();
 renderMenu();
 renderPlan();
+
