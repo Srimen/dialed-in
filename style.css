@@ -1,0 +1,97 @@
+/* ===== Colors and font ===== */
+:root {
+  --kale: #23402e;
+  --lemon: #f2d64b;
+  --sage: #dce6d5;
+  --paper: #fbfbf7;
+  --ink: #1d1f1c;
+  --muted: #5b6358;
+  --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ===== Reset and base ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--lemon); outline-offset: 2px; }
+
+/* ===== Navigation ===== */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 6vw;
+  background: var(--kale);
+  color: var(--paper);
+}
+.logo { font-weight: 800; font-size: 1.4rem; text-decoration: none; }
+.nav nav { display: flex; gap: 1.5rem; }
+.nav nav a { text-decoration: none; opacity: .85; }
+.nav nav a:hover { opacity: 1; text-decoration: underline; }
+
+/* ===== Hero ===== */
+.hero {
+  background: var(--kale);
+  color: var(--paper);
+  padding: 5rem 6vw 6rem;
+}
+.hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  max-width: 16ch;
+  letter-spacing: -0.02em;
+}
+.hero p { max-width: 52ch; margin: 1.5rem 0 2rem; font-size: 1.15rem; opacity: .9; }
+.btn {
+  display: inline-block;
+  background: var(--lemon);
+  color: var(--ink);
+  font-weight: 700;
+  padding: .85rem 1.6rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+/* ===== Sections ===== */
+section:not(.hero) { padding: 4.5rem 6vw; }
+h2 { font-size: 2rem; font-weight: 800; margin-bottom: 2rem; }
+
+/* ===== How it works ===== */
+.steps {
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+}
+.steps li { counter-increment: step; border-top: 3px solid var(--kale); padding-top: 1rem; }
+.steps li::before {
+  content: counter(step);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--kale);
+}
+.steps h3 { margin: .25rem 0 .4rem; }
+.steps p { color: var(--muted); }
+
+/* ===== Menu and plan ===== */
+.menu { background: var(--sage); }
+.plan-list { list-style: none; max-width: 640px; }
+.plan-totals { margin-top: 1.5rem; font-size: 1.2rem; font-weight: 700; }
+
+/* ===== Footer ===== */
+footer { padding: 2rem 6vw; color: var(--muted); }
+
+/* ===== Mobile ===== */
+@media (max-width: 600px) {
+  .nav nav { gap: 1rem; font-size: .9rem; }
+  .hero { padding: 3.5rem 6vw 4rem; }
+}
