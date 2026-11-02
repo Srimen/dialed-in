@@ -8,8 +8,14 @@ A meal prep website that helps you plan a week of macro-balanced meals. Browse t
 
 - [x] Landing page with "how it works" section
 - [x] Responsive layout for mobile and desktop
-- [ ] Weekly menu rendered from meal data
-- [ ] Plan builder with live calorie and protein totals
+- [x] Weekly menu rendered from meal data
+- [x] Plan builder with live calorie and protein totals
+
+## Roadmap
+
+- [ ] Filter meals by tag (high protein, vegetarian, etc.)
+- [ ] Save plans between visits
+- [ ] Move meal data to a backend
 
 ## Tech stack (so far)
 

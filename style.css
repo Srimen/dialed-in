@@ -82,9 +82,54 @@ h2 { font-size: 2rem; font-weight: 800; margin-bottom: 2rem; }
 .steps h3 { margin: .25rem 0 .4rem; }
 .steps p { color: var(--muted); }
 
-/* ===== Menu and plan ===== */
+/* ===== Menu ===== */
 .menu { background: var(--sage); }
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+.meal {
+  background: var(--paper);
+  padding: 1.25rem;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.meal h3 { font-size: 1.15rem; }
+.meal .macros { color: var(--muted); font-size: .95rem; }
+.meal .tag {
+  align-self: flex-start;
+  font-size: .8rem;
+  background: var(--sage);
+  padding: .15rem .6rem;
+  border-radius: 999px;
+}
+.meal button, .plan-list button {
+  margin-top: auto;
+  font: inherit;
+  font-weight: 700;
+  border: 2px solid var(--kale);
+  background: transparent;
+  color: var(--kale);
+  padding: .55rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.meal button:hover { background: var(--kale); color: var(--paper); }
+
+/* ===== Plan ===== */
 .plan-list { list-style: none; max-width: 640px; }
+.plan-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .85rem 0;
+  border-bottom: 1px solid var(--sage);
+}
+.plan-list button { margin: 0; padding: .3rem .8rem; font-size: .9rem; }
+.plan-empty { color: var(--muted); }
 .plan-totals { margin-top: 1.5rem; font-size: 1.2rem; font-weight: 700; }
 
 /* ===== Footer ===== */
