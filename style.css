@@ -97,6 +97,13 @@ h2 { font-size: 2rem; font-weight: 800; margin-bottom: 2rem; }
   flex-direction: column;
   gap: .5rem;
 }
+.meal img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  background: var(--sage);
+}
 .meal h3 { font-size: 1.15rem; }
 .meal .macros { color: var(--muted); font-size: .95rem; }
 .meal .tag {

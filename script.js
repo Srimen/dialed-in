@@ -1,12 +1,12 @@
 // ===== Menu data =====
 // Each meal is an object. Later this could come from a backend.
 const meals = [
-  { id: 1, name: "Chicken burrito bowl", calories: 620, protein: 48, tag: "High protein" },
-  { id: 2, name: "Teriyaki salmon & rice", calories: 580, protein: 40, tag: "High protein" },
-  { id: 3, name: "Turkey meatballs & pasta", calories: 650, protein: 45, tag: "Comfort" },
-  { id: 4, name: "Chickpea curry", calories: 520, protein: 22, tag: "Vegetarian" },
-  { id: 5, name: "Steak & sweet potato", calories: 700, protein: 52, tag: "High protein" },
-  { id: 6, name: "Tofu stir fry", calories: 480, protein: 28, tag: "Vegetarian" }
+  { id: 1, name: "Chicken burrito bowl", calories: 620, protein: 48, tag: "High protein", image: "images/chicken-burrito-bowl.jpg" },
+  { id: 2, name: "Teriyaki salmon & rice", calories: 580, protein: 40, tag: "High protein", image: "images/teriyaki-salmon.jpg" },
+  { id: 3, name: "Turkey meatballs & pasta", calories: 650, protein: 45, tag: "Comfort", image: "images/turkey-meatballs.jpg" },
+  { id: 4, name: "Chickpea curry", calories: 520, protein: 22, tag: "Vegetarian", image: "images/chickpea-curry.jpg" },
+  { id: 5, name: "Steak & sweet potato", calories: 700, protein: 52, tag: "High protein", image: "images/steak-sweet-potato.jpg" },
+  { id: 6, name: "Tofu stir fry", calories: 480, protein: 28, tag: "Vegetarian", image: "images/tofu-stir-fry.jpg" }
 ];
 
 // Meals the user has added to their plan
@@ -21,6 +21,7 @@ const planTotals = document.getElementById("plan-totals");
 function renderMenu() {
   mealGrid.innerHTML = meals.map(meal => `
     <article class="meal">
+      <img src="${meal.image}" alt="${meal.name}" loading="lazy">
       <span class="tag">${meal.tag}</span>
       <h3>${meal.name}</h3>
       <p class="macros">${meal.calories} cal, ${meal.protein}g protein</p>
