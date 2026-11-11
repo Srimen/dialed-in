@@ -9,8 +9,35 @@ const meals = [
   { id: 6, name: "Tofu stir fry", calories: 480, protein: 28, tag: "Vegetarian", image: "images/tofu-stir-fry.jpg" }
 ];
 
-// Meals the user has added to their plan
-const plan = [];
+// ===== Saving the plan between visits =====
+const STORAGE_KEY = "dialedInPlan";
+
+// Load the saved plan. Only meal IDs are stored, so we look up
+// the full meal for each ID. If a meal was removed from the menu,
+// filter(Boolean) drops it instead of crashing.
+function loadPlan() {
+  try {
+    const savedIds = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    return savedIds
+      .map(id => meals.find(meal => meal.id === id))
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+// Save just the IDs of the meals in the plan
+function savePlan() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan.map(meal => meal.id)));
+  } catch {
+    // If storage is blocked (e.g. private browsing), the site still works,
+    // the plan just won't be remembered.
+  }
+}
+
+// Meals the user has added to their plan (starts with whatever was saved)
+const plan = loadPlan();
 
 // Which filter is selected right now
 let activeTag = "All";
@@ -83,6 +110,7 @@ mealGrid.addEventListener("click", e => {
   const id = Number(e.target.dataset.id);
   if (!id) return;
   plan.push(meals.find(m => m.id === id));
+  savePlan();
   renderPlan();
 });
 
@@ -91,6 +119,7 @@ planList.addEventListener("click", e => {
   const index = e.target.dataset.index;
   if (index === undefined) return;
   plan.splice(Number(index), 1);
+  savePlan();
   renderPlan();
 });
 

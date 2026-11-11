@@ -1,6 +1,6 @@
 # Dialed In 🥗
 
-A meal prep website that helps you plan a week of macro-balanced meals. Browse the weekly menu, filter by what you're looking for, add meals to your plan, and see your total calories and protein update as you go.
+A meal prep website that helps you plan a week of macro-balanced meals. Browse the weekly menu, filter by what you're looking for, add meals to your plan, and see your total calories and protein update as you go. Your plan is saved, so it's still there when you come back.
 
 🚧 **Status:** In progress
 
@@ -12,10 +12,10 @@ A meal prep website that helps you plan a week of macro-balanced meals. Browse t
 - [x] Plan builder with live calorie and protein totals
 - [x] Photos for each meal
 - [x] Filter meals by tag (high protein, vegetarian, comfort)
+- [x] Plan saved between visits with localStorage
 
 ## Roadmap
 
-- [ ] Save plans between visits
 - [ ] Move meal data to a backend
 
 ## Tech stack (so far)
