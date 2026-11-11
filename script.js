@@ -64,8 +64,10 @@ function getVisibleMeals() {
   );
 }
 
-// ===== Saving the plan between visits =====
+// ===== Saving and loading =====
 const STORAGE_KEY = "dialedInPlan";
+const TARGETS_KEY = "dialedInTargets"; // written by calculator.js
+const DAYS_KEY = "dialedInDays";
 
 // Load the saved plan. Only meal IDs are stored, so we look up
 // the full meal for each ID. If a meal was removed from the menu,
@@ -91,14 +93,37 @@ function savePlan() {
   }
 }
 
+function loadTargets() {
+  try {
+    return JSON.parse(localStorage.getItem(TARGETS_KEY));
+  } catch {
+    return null;
+  }
+}
+
+function loadDays() {
+  try {
+    const days = Number(localStorage.getItem(DAYS_KEY));
+    return days >= 1 && days <= 7 ? days : 1;
+  } catch {
+    return 1;
+  }
+}
+
 // Meals the user has added to their plan (starts with whatever was saved)
 const plan = loadPlan();
 
-// ===== Grab the empty containers from index.html =====
+// How many days the plan is spread over
+let planDays = loadDays();
+
+// ===== Grab the elements from index.html =====
 const filterBar = document.getElementById("filter-bar");
 const mealGrid = document.getElementById("meal-grid");
 const planList = document.getElementById("plan-list");
 const planTotals = document.getElementById("plan-totals");
+const daysSelect = document.getElementById("plan-days");
+
+daysSelect.value = String(planDays);
 
 // ===== Show the filter buttons, grouped =====
 function renderFilters() {
@@ -163,24 +188,98 @@ function renderMenu() {
   `).join("");
 }
 
-// ===== Show the user's plan and totals =====
+// ===== Show the user's plan =====
 function renderPlan() {
   if (plan.length === 0) {
     planList.innerHTML = `<li class="plan-empty">No meals yet. Add some from the menu above.</li>`;
-    planTotals.textContent = "";
+  } else {
+    planList.innerHTML = plan.map((meal, index) => `
+      <li>
+        <span>${meal.name}</span>
+        <button data-index="${index}">Remove</button>
+      </li>
+    `).join("");
+  }
+
+  renderTracker();
+}
+
+// ===== Daily macro tracker =====
+const MACROS = [
+  { key: "calories", label: "Calories", unit: " cal" },
+  { key: "protein",  label: "Protein",  unit: "g" },
+  { key: "carbs",    label: "Carbs",    unit: "g" },
+  { key: "fat",      label: "Fat",      unit: "g" }
+];
+
+function renderTracker() {
+  const targets = loadTargets();
+
+  // Add up each macro across every meal in the plan,
+  // then divide by the number of days to get a daily average
+  const perDay = key =>
+    Math.round(plan.reduce((sum, meal) => sum + meal[key], 0) / planDays);
+
+  const mealText = plan.length === 1 ? "1 meal" : `${plan.length} meals`;
+  const dayText = planDays === 1 ? "1 day" : `${planDays} days`;
+
+  // No targets yet: show plain totals and point to the calculator
+  if (!targets) {
+    planTotals.innerHTML = `
+      <div class="tracker">
+        <h3>Daily macros</h3>
+        <p class="tracker-sub">${mealText} over ${dayText}, per day</p>
+        <dl class="tracker-simple">
+          ${MACROS.map(m => `<div><dt>${m.label}</dt><dd>${perDay(m.key)}${m.unit}</dd></div>`).join("")}
+        </dl>
+        <p class="tracker-cta"><a href="#calculator">Set your daily targets</a> to see your progress.</p>
+      </div>
+    `;
     return;
   }
 
-  planList.innerHTML = plan.map((meal, index) => `
-    <li>
-      <span>${meal.name}</span>
-      <button data-index="${index}">Remove</button>
-    </li>
-  `).join("");
+  // Targets set: show a progress bar for each macro
+  const rows = MACROS.map(m => {
+    const value = perDay(m.key);
+    const target = targets[m.key];
+    const percent = target > 0 ? Math.round((value / target) * 100) : 0;
 
-  const totalCalories = plan.reduce((sum, m) => sum + m.calories, 0);
-  const totalProtein = plan.reduce((sum, m) => sum + m.protein, 0);
-  planTotals.textContent = `${plan.length} meals: ${totalCalories} cal, ${totalProtein}g protein`;
+    let status;
+    let statusText;
+    if (percent < 90) {
+      status = "under";
+      statusText = `${target - value}${m.unit} to go`;
+    } else if (percent <= 110) {
+      status = "on";
+      statusText = "On target";
+    } else {
+      status = "over";
+      statusText = `Over by ${value - target}${m.unit}`;
+    }
+
+    return `
+      <div class="tracker-row">
+        <div class="tracker-label">
+          <span>${m.label}</span>
+          <span>${value} / ${target}${m.unit}</span>
+        </div>
+        <div class="bar" role="progressbar" aria-label="${m.label}"
+             aria-valuemin="0" aria-valuemax="${target}" aria-valuenow="${value}">
+          <div class="bar-fill ${status}" style="width: ${Math.min(percent, 100)}%"></div>
+        </div>
+        <p class="tracker-status">${statusText}</p>
+      </div>
+    `;
+  }).join("");
+
+  planTotals.innerHTML = `
+    <div class="tracker">
+      <h3>Daily macro tracker</h3>
+      <p class="tracker-sub">${mealText} over ${dayText}, compared with your daily targets</p>
+      ${rows}
+      <p class="tracker-cta"><a href="#calculator">Update your targets</a></p>
+    </div>
+  `;
 }
 
 // ===== Turning filters on, off, or clearing them =====
@@ -226,6 +325,16 @@ planList.addEventListener("click", e => {
   savePlan();
   renderPlan();
 });
+
+// ===== Day picker =====
+daysSelect.addEventListener("change", () => {
+  planDays = Number(daysSelect.value);
+  try { localStorage.setItem(DAYS_KEY, planDays); } catch {}
+  renderTracker();
+});
+
+// ===== When the calculator saves new targets, refresh the tracker =====
+window.addEventListener("targets-updated", renderTracker);
 
 // ===== Start the page =====
 renderFilters();

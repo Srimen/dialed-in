@@ -117,9 +117,26 @@
     </section>
 
     <section id="plan" class="plan">
-      <h2>My plan</h2>
-      <ul id="plan-list" class="plan-list"></ul>
-      <div id="plan-totals" class="plan-totals"></div>
+      <div class="plan-header">
+        <h2>My plan</h2>
+        <label class="days-picker">
+          Spread over
+          <select id="plan-days">
+            <option value="1">1 day</option>
+            <option value="2">2 days</option>
+            <option value="3">3 days</option>
+            <option value="4">4 days</option>
+            <option value="5">5 days</option>
+            <option value="6">6 days</option>
+            <option value="7">7 days</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="plan-layout">
+        <ul id="plan-list" class="plan-list"></ul>
+        <div id="plan-totals" aria-live="polite"></div>
+      </div>
     </section>
   </main>
 

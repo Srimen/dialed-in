@@ -149,6 +149,9 @@
     save(PROFILE_KEY, Object.fromEntries(new FormData(form)));
     save(TARGETS_KEY, targets);
     renderResult(targets);
+
+    // NEW: tell the rest of the site (the plan tracker) that targets changed
+    window.dispatchEvent(new CustomEvent("targets-updated"));
   });
 
   // ----- On page load: restore anything saved -----
