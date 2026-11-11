@@ -1,12 +1,43 @@
 // ===== Menu data =====
-// Each meal is an object. Later this could come from a backend.
+// Each meal has full macros (calories, protein, carbs, fat in grams)
+// plus a category tag for filtering and a list of diet/allergen tags.
 const meals = [
-  { id: 1, name: "Chicken burrito bowl", calories: 620, protein: 48, tag: "High protein", image: "images/chicken-burrito-bowl.jpg" },
-  { id: 2, name: "Teriyaki salmon & rice", calories: 580, protein: 40, tag: "High protein", image: "images/teriyaki-salmon.jpg" },
-  { id: 3, name: "Turkey meatballs & pasta", calories: 650, protein: 45, tag: "Comfort", image: "images/turkey-meatballs.jpg" },
-  { id: 4, name: "Chickpea curry", calories: 520, protein: 22, tag: "Vegetarian", image: "images/chickpea-curry.jpg" },
-  { id: 5, name: "Steak & sweet potato", calories: 700, protein: 52, tag: "High protein", image: "images/steak-sweet-potato.jpg" },
-  { id: 6, name: "Tofu stir fry", calories: 480, protein: 28, tag: "Vegetarian", image: "images/tofu-stir-fry.jpg" }
+  {
+    id: 1, name: "Chicken burrito bowl", tag: "High protein",
+    calories: 620, protein: 48, carbs: 65, fat: 19,
+    diet: ["Gluten-free", "Nut-free", "Halal"],
+    image: "images/chicken-burrito-bowl.jpg"
+  },
+  {
+    id: 2, name: "Teriyaki salmon & rice", tag: "High protein",
+    calories: 580, protein: 40, carbs: 60, fat: 20,
+    diet: ["Dairy-free", "Nut-free"],
+    image: "images/teriyaki-salmon.jpg"
+  },
+  {
+    id: 3, name: "Turkey meatballs & pasta", tag: "Comfort",
+    calories: 650, protein: 45, carbs: 70, fat: 21,
+    diet: ["Nut-free"],
+    image: "images/turkey-meatballs.jpg"
+  },
+  {
+    id: 4, name: "Chickpea curry", tag: "Vegetarian",
+    calories: 520, protein: 22, carbs: 68, fat: 18,
+    diet: ["Vegetarian", "Gluten-free", "Dairy-free", "Nut-free", "Halal"],
+    image: "images/chickpea-curry.jpg"
+  },
+  {
+    id: 5, name: "Steak & sweet potato", tag: "High protein",
+    calories: 700, protein: 52, carbs: 55, fat: 30,
+    diet: ["Gluten-free", "Dairy-free", "Nut-free", "Halal"],
+    image: "images/steak-sweet-potato.jpg"
+  },
+  {
+    id: 6, name: "Tofu stir fry", tag: "Vegetarian",
+    calories: 480, protein: 28, carbs: 45, fat: 21,
+    diet: ["Vegetarian", "Dairy-free", "Nut-free"],
+    image: "images/tofu-stir-fry.jpg"
+  }
 ];
 
 // ===== Saving the plan between visits =====
@@ -70,7 +101,18 @@ function renderMenu() {
       <img src="${meal.image}" alt="${meal.name}" loading="lazy">
       <span class="tag">${meal.tag}</span>
       <h3>${meal.name}</h3>
-      <p class="macros">${meal.calories} cal, ${meal.protein}g protein</p>
+
+      <dl class="macro-row">
+        <div><dt>Cal</dt><dd>${meal.calories}</dd></div>
+        <div><dt>Protein</dt><dd>${meal.protein}g</dd></div>
+        <div><dt>Carbs</dt><dd>${meal.carbs}g</dd></div>
+        <div><dt>Fat</dt><dd>${meal.fat}g</dd></div>
+      </dl>
+
+      <ul class="diet-tags">
+        ${meal.diet.map(d => `<li>${d}</li>`).join("")}
+      </ul>
+
       <button data-id="${meal.id}">Add to plan</button>
     </article>
   `).join("");
