@@ -1,6 +1,6 @@
 # Dialed In 🥗
 
-A fitness-focused meal prep website. Browse the weekly menu with full macros for every meal, filter by your goals and dietary needs, add meals to your plan, and see your totals update as you go. Your plan is saved, so it's still there when you come back.
+A fitness-focused meal prep website. Find your daily macro targets, browse the weekly menu with full macros for every meal, filter by your goals and dietary needs, and build a plan that's saved for when you come back.
 
 🚧 **Status:** In progress
 
@@ -14,11 +14,11 @@ A fitness-focused meal prep website. Browse the weekly menu with full macros for
 - [x] Plan saved between visits with localStorage
 - [x] Full macros (calories, protein, carbs, fat) and diet/allergen tags on every meal
 - [x] Combinable filters for goals (high protein, low carb, under 500 cal) and diets (vegetarian, gluten-free, dairy-free, nut-free, halal)
+- [x] Macro calculator (Mifflin-St Jeor) that recommends a cut, recomp, or lean bulk with daily targets, in metric or imperial
 
 ## Roadmap
 
 **Fitness**
-- [ ] Macro calculator with cut / recomp / bulk recommendation
 - [ ] Cart macro tracker with progress toward daily targets
 - [ ] Build-your-own bowl with live macros
 - [ ] Ingredient swaps, portion sizes, and spice levels
