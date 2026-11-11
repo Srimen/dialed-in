@@ -1,6 +1,6 @@
 # Dialed In 🥗
 
-A fitness-focused meal prep website. Find your daily macro targets, browse the weekly menu with full macros for every meal, filter by your goals and dietary needs, and build a plan that tracks your progress toward your targets.
+A fitness-focused meal prep website. Find your daily macro targets, browse the weekly menu with full macros for every meal, build your own bowl, and plan meals that track your progress toward your targets.
 
 🚧 **Status:** In progress
 
@@ -16,11 +16,11 @@ A fitness-focused meal prep website. Find your daily macro targets, browse the w
 - [x] Combinable filters for goals (high protein, low carb, under 500 cal) and diets (vegetarian, gluten-free, dairy-free, nut-free, halal)
 - [x] Macro calculator (Mifflin-St Jeor) that recommends a cut, recomp, or lean bulk with daily targets, in metric or imperial
 - [x] Daily macro tracker with progress bars toward your targets, averaged across 1–7 days
+- [x] Build-your-own bowl with live macros and automatic diet tags
 
 ## Roadmap
 
 **Fitness**
-- [ ] Build-your-own bowl with live macros
 - [ ] Ingredient swaps, portion sizes, and spice levels
 - [ ] Saved favourites
 

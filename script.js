@@ -69,24 +69,28 @@ const STORAGE_KEY = "dialedInPlan";
 const TARGETS_KEY = "dialedInTargets"; // written by calculator.js
 const DAYS_KEY = "dialedInDays";
 
-// Load the saved plan. Only meal IDs are stored, so we look up
-// the full meal for each ID. If a meal was removed from the menu,
-// filter(Boolean) drops it instead of crashing.
+// The plan is saved as a list where:
+//  - menu meals are saved as just their ID (a number)
+//  - custom bowls are saved as the full object, since they aren't on the menu
 function loadPlan() {
   try {
-    const savedIds = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    return savedIds
-      .map(id => meals.find(meal => meal.id === id))
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    return saved
+      .map(entry => {
+        if (typeof entry === "number") return meals.find(meal => meal.id === entry);
+        if (entry && entry.custom && typeof entry.calories === "number") return entry;
+        return null;
+      })
       .filter(Boolean);
   } catch {
     return [];
   }
 }
 
-// Save just the IDs of the meals in the plan
 function savePlan() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan.map(meal => meal.id)));
+    const toSave = plan.map(item => (item.custom ? item : item.id));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   } catch {
     // If storage is blocked (e.g. private browsing), the site still works,
     // the plan just won't be remembered.
@@ -191,11 +195,14 @@ function renderMenu() {
 // ===== Show the user's plan =====
 function renderPlan() {
   if (plan.length === 0) {
-    planList.innerHTML = `<li class="plan-empty">No meals yet. Add some from the menu above.</li>`;
+    planList.innerHTML = `<li class="plan-empty">No meals yet. Add some from the menu or build a bowl.</li>`;
   } else {
     planList.innerHTML = plan.map((meal, index) => `
       <li>
-        <span>${meal.name}</span>
+        <span class="plan-item-name">
+          ${meal.name}
+          ${meal.custom ? `<small class="plan-badge">Custom bowl, ${meal.calories} cal</small>` : ""}
+        </span>
         <button data-index="${index}">Remove</button>
       </li>
     `).join("");
@@ -333,8 +340,16 @@ daysSelect.addEventListener("change", () => {
   renderTracker();
 });
 
-// ===== When the calculator saves new targets, refresh the tracker =====
+// ===== Events from other files =====
+// calculator.js: new targets were saved
 window.addEventListener("targets-updated", renderTracker);
+
+// bowl.js: a custom bowl was added
+window.addEventListener("add-to-plan", e => {
+  plan.push(e.detail);
+  savePlan();
+  renderPlan();
+});
 
 // ===== Start the page =====
 renderFilters();

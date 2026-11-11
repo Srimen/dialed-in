@@ -290,6 +290,50 @@ h2 { font-size: 2rem; font-weight: 800; margin-bottom: 2rem; }
 }
 .menu-empty p { margin-bottom: .5rem; }
 
+/* ===== Build your own bowl ===== */
+.bowl-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+.bowl-form { display: grid; gap: 1.75rem; }
+.bowl-group { border: none; }
+.bowl-group legend { font-weight: 800; font-size: 1.15rem; margin-bottom: .6rem; }
+.bowl-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: .6rem;
+}
+.bowl-choice {
+  align-items: flex-start;
+  border-radius: 12px;
+  padding: .7rem .9rem;
+}
+.bowl-choice input { margin-top: .3rem; }
+.choice-text { display: flex; flex-direction: column; }
+.choice-text small { color: var(--muted); font-size: .8rem; }
+
+.bowl-preview {
+  position: sticky;
+  top: 1rem;
+  background: var(--paper);
+  border: 2px solid var(--kale);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+.bowl-preview h3 { font-size: 1.35rem; font-weight: 800; }
+.bowl-name { color: var(--muted); margin-bottom: .75rem; }
+#bowl-summary .diet-tags { margin: .75rem 0 1.25rem; }
+.bowl-preview .btn { width: 100%; }
+.bowl-status {
+  min-height: 1.5em;
+  margin-top: .5rem;
+  font-weight: 700;
+  color: var(--kale);
+  text-align: center;
+}
+
 /* ===== Plan ===== */
 .plan-header {
   display: flex;
@@ -324,10 +368,13 @@ h2 { font-size: 2rem; font-weight: 800; margin-bottom: 2rem; }
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   padding: .85rem 0;
   border-bottom: 1px solid var(--sage);
 }
-.plan-list button { margin: 0; padding: .3rem .8rem; font-size: .9rem; }
+.plan-item-name { display: flex; flex-direction: column; }
+.plan-badge { font-size: .8rem; color: var(--muted); }
+.plan-list button { margin: 0; padding: .3rem .8rem; font-size: .9rem; flex-shrink: 0; }
 .plan-empty { color: var(--muted); }
 
 /* ===== Daily macro tracker ===== */
@@ -373,6 +420,12 @@ h2 { font-size: 2rem; font-weight: 800; margin-bottom: 2rem; }
 
 /* ===== Footer ===== */
 footer { padding: 2rem 6vw; color: var(--muted); }
+
+/* ===== Tablet ===== */
+@media (max-width: 800px) {
+  .bowl-layout { grid-template-columns: 1fr; }
+  .bowl-preview { position: static; }
+}
 
 /* ===== Mobile ===== */
 @media (max-width: 600px) {

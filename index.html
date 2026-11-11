@@ -15,6 +15,7 @@
       <a href="#how">How it works</a>
       <a href="#calculator">Macros</a>
       <a href="#menu">Menu</a>
+      <a href="#bowl">Bowl</a>
       <a href="#plan">My plan</a>
     </nav>
   </header>
@@ -116,6 +117,22 @@
       <div id="meal-grid" class="meal-grid"></div>
     </section>
 
+    <section id="bowl" class="bowl">
+      <h2>Build your own bowl</h2>
+      <p class="section-intro">Pick a protein, a carb, and a veggie. Your macros update as you choose.</p>
+
+      <div class="bowl-layout">
+        <form id="bowl-form" class="bowl-form"></form>
+
+        <aside class="bowl-preview">
+          <h3>Your bowl</h3>
+          <div id="bowl-summary"></div>
+          <button type="button" id="add-bowl" class="btn">Add bowl to plan</button>
+          <p id="bowl-status" class="bowl-status" aria-live="polite"></p>
+        </aside>
+      </div>
+    </section>
+
     <section id="plan" class="plan">
       <div class="plan-header">
         <h2>My plan</h2>
@@ -143,6 +160,7 @@
   <footer>© 2026 Dialed In</footer>
   <script src="script.js"></script>
   <script src="calculator.js"></script>
+  <script src="bowl.js"></script>
 </body>
 </html>
 
