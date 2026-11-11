@@ -1,6 +1,6 @@
 // ===== Menu data =====
 // Each meal has full macros (calories, protein, carbs, fat in grams)
-// plus a category tag for filtering and a list of diet/allergen tags.
+// plus a category tag and a list of diet/allergen tags.
 const meals = [
   {
     id: 1, name: "Chicken burrito bowl", tag: "High protein",
@@ -40,6 +40,30 @@ const meals = [
   }
 ];
 
+// ===== Filters =====
+// Each filter has a test function that returns true if a meal matches.
+// To add a new filter, just add one object to this list.
+const DIET_TAGS = ["Vegetarian", "Gluten-free", "Dairy-free", "Nut-free", "Halal"];
+
+const FILTERS = [
+  { id: "high-protein", group: "Goals", label: "High protein (40g+)", test: m => m.protein >= 40 },
+  { id: "low-carb",     group: "Goals", label: "Low carb (50g or less)", test: m => m.carbs <= 50 },
+  { id: "under-500",    group: "Goals", label: "Under 500 cal", test: m => m.calories < 500 },
+  ...DIET_TAGS.map(tag => ({
+    id: tag, group: "Diet", label: tag, test: m => m.diet.includes(tag)
+  }))
+];
+
+// The IDs of every filter the user has turned on
+const activeFilters = new Set();
+
+// A meal shows up only if it passes EVERY active filter
+function getVisibleMeals() {
+  return meals.filter(meal =>
+    [...activeFilters].every(id => FILTERS.find(f => f.id === id).test(meal))
+  );
+}
+
 // ===== Saving the plan between visits =====
 const STORAGE_KEY = "dialedInPlan";
 
@@ -70,31 +94,52 @@ function savePlan() {
 // Meals the user has added to their plan (starts with whatever was saved)
 const plan = loadPlan();
 
-// Which filter is selected right now
-let activeTag = "All";
-
 // ===== Grab the empty containers from index.html =====
 const filterBar = document.getElementById("filter-bar");
 const mealGrid = document.getElementById("meal-grid");
 const planList = document.getElementById("plan-list");
 const planTotals = document.getElementById("plan-totals");
 
-// ===== Show the filter buttons =====
-// The tags come from the meal data, so adding a meal with a new tag
-// creates a new filter button automatically.
+// ===== Show the filter buttons, grouped =====
 function renderFilters() {
-  const tags = ["All", ...new Set(meals.map(meal => meal.tag))];
+  const groups = ["Goals", "Diet"];
 
-  filterBar.innerHTML = tags.map(tag => `
-    <button class="filter-btn" data-tag="${tag}" aria-pressed="${tag === activeTag}">${tag}</button>
+  const groupsHtml = groups.map(group => `
+    <div class="filter-group">
+      <span class="filter-group-label">${group}</span>
+      ${FILTERS.filter(f => f.group === group).map(f => `
+        <button class="filter-btn" data-filter="${f.id}" aria-pressed="${activeFilters.has(f.id)}">${f.label}</button>
+      `).join("")}
+    </div>
   `).join("");
+
+  const visibleCount = getVisibleMeals().length;
+  const clearButton = activeFilters.size > 0
+    ? `<button class="clear-filters" data-action="clear">Clear filters</button>`
+    : "";
+
+  filterBar.innerHTML = `
+    ${groupsHtml}
+    <div class="filter-footer">
+      <span class="filter-count">Showing ${visibleCount} of ${meals.length} meals</span>
+      ${clearButton}
+    </div>
+  `;
 }
 
-// ===== Show the meals that match the selected filter =====
+// ===== Show the meals that match the active filters =====
 function renderMenu() {
-  const visibleMeals = activeTag === "All"
-    ? meals
-    : meals.filter(meal => meal.tag === activeTag);
+  const visibleMeals = getVisibleMeals();
+
+  if (visibleMeals.length === 0) {
+    mealGrid.innerHTML = `
+      <div class="menu-empty">
+        <p>No meals match all of these filters. Try turning one off.</p>
+        <button class="clear-filters" data-action="clear">Clear filters</button>
+      </div>
+    `;
+    return;
+  }
 
   mealGrid.innerHTML = visibleMeals.map(meal => `
     <article class="meal">
@@ -138,17 +183,34 @@ function renderPlan() {
   planTotals.textContent = `${plan.length} meals: ${totalCalories} cal, ${totalProtein}g protein`;
 }
 
-// ===== Filter buttons =====
+// ===== Turning filters on, off, or clearing them =====
+function clearFilters() {
+  activeFilters.clear();
+  renderFilters();
+  renderMenu();
+}
+
 filterBar.addEventListener("click", e => {
-  const tag = e.target.dataset.tag;
-  if (!tag) return;
-  activeTag = tag;
+  if (e.target.dataset.action === "clear") return clearFilters();
+
+  const id = e.target.dataset.filter;
+  if (!id) return;
+
+  // Toggle: if it's on, turn it off; if it's off, turn it on
+  if (activeFilters.has(id)) {
+    activeFilters.delete(id);
+  } else {
+    activeFilters.add(id);
+  }
+
   renderFilters();
   renderMenu();
 });
 
-// ===== "Add to plan" buttons =====
+// ===== "Add to plan" buttons (and "Clear filters" in the empty state) =====
 mealGrid.addEventListener("click", e => {
+  if (e.target.dataset.action === "clear") return clearFilters();
+
   const id = Number(e.target.dataset.id);
   if (!id) return;
   plan.push(meals.find(m => m.id === id));
